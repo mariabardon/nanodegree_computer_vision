@@ -1,2 +1,6 @@
 data/
 .ipynb_checkpoints
+Videos/
+Support_Material/
+__pycache__/
+weights/
