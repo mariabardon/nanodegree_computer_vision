@@ -1,6 +1,9 @@
 data/
-.ipynb_checkpoints
-Videos/
-Support_Material/
-__pycache__/
+.ipynb_checkpoints/
+date_night_images/
+saved_models/
+videos/
 weights/
+__pycache__/
+more_material/
+
