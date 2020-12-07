@@ -37,7 +37,6 @@ class DecoderRNN(nn.Module):
         x = torch.cat((features,captions), dim=1)
         x, h = self.lstm(x)
         x = self.dropout(x)
-        #x = x.view(x.size()[0]*x.size()[1], self.hidden_size)
         x = self.fc(x)
         return x
     
@@ -45,4 +44,14 @@ class DecoderRNN(nn.Module):
 
     def sample(self, inputs, states=None, max_len=20):
         " accepts pre-processed image tensor (inputs) and returns predicted sentence (list of tensor ids of length max_len) "
-        pass
+        captions = []
+        x = inputs
+        h = states
+        for n in range(max_len):
+            x, h = self.lstm(x,h)
+            x = self.fc(x)
+            new_caption = torch.argmax(x, dim=2)
+            captions.append(new_caption.item())
+            x = self.embed(new_caption)
+        return captions
+        
