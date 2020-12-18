@@ -16,11 +16,12 @@ import random
 # easier to implement the essentials of SLAM without
 # cluttered math.
 #
+# the robot class
 class robot:
-    
+
     # --------
-    # init:
-    #   creates a robot with the specified parameters and initializes
+    # init: 
+    #   creates a robot with the specified parameters and initializes 
     #   the location (self.x, self.y) to the center of the world
     #
     def __init__(self, world_size = 100.0, measurement_range = 30.0,
@@ -34,29 +35,29 @@ class robot:
         self.measurement_noise = measurement_noise
         self.landmarks = []
         self.num_landmarks = 0
-    
-    
+
+
     # returns a positive, random float
     def rand(self):
         return random.random() * 2.0 - 1.0
-    
-    
+
+
     # --------
     # move: attempts to move robot by dx, dy. If outside world
     #       boundary, then the move does nothing and instead returns failure
     #
     def move(self, dx, dy):
-        
+
         x = self.x + dx + self.rand() * self.motion_noise
         y = self.y + dy + self.rand() * self.motion_noise
-        
+
         if x < 0.0 or x > self.world_size or y < 0.0 or y > self.world_size:
             return False
         else:
             self.x = x
             self.y = y
             return True
-
+    
 
     # --------
     # sense: returns x- and y- distances to landmarks within visibility range
@@ -65,8 +66,7 @@ class robot:
     #        landmarks to be visible at all times
     #
     
-    ## TODO: paste your complete the sense function, here
-    ## make sure the indentation of the code is correct
+    ## TODO: complete the sense function
     def sense(self):
         ''' This function does not take in any parameters, instead it references internal variables
             (such as self.landamrks) to measure the distance between the robot and any landmarks
@@ -77,7 +77,7 @@ class robot:
             One item in the returned list should be in the form: [landmark_index, dx, dy].
             '''
            
-        measurements = None
+        measurements = []
         
         ## TODO: iterate through all of the landmarks in a world
         
@@ -86,21 +86,23 @@ class robot:
         ## 2. account for measurement noise by *adding* a noise component to dx and dy
         ##    - The noise component should be a random value between [-1.0, 1.0)*measurement_noise
         ##    - Feel free to use the function self.rand() to help calculate this noise component
+        ##    - It may help to reference the `move` function for noise calculation
         ## 3. If either of the distances, dx or dy, fall outside of the internal var, measurement_range
         ##    then we cannot record them; if they do fall in the range, then add them to the measurements list
         ##    as list.append([index, dx, dy]), this format is important for data creation done later
         for i, l in enumerate(self.landmarks):
-            dx = self.x - l[0] + self.rand()*measurement_noise
-            dy = self.y - l[1] + self.rand()*measurement_noise
-            if abs(dx)>measurement_range or abs(dy)>measurement_range:
+            dx = l[0] - self.x + self.rand() * self.measurement_noise
+            dy = l[1] - self.y + self.rand() * self.measurement_noise
+            if abs(dx) <= self.measurement_range or abs(dy) <= self.measurement_range: 
                 measurements.append([i,dx,dy])
-                
+            
+        
         ## TODO: return the final, complete list of measurements
         return measurements
 
-
+    
     # --------
-    # make_landmarks:
+    # make_landmarks: 
     # make random landmarks located in the world
     #
     def make_landmarks(self, num_landmarks):
@@ -109,12 +111,11 @@ class robot:
             self.landmarks.append([round(random.random() * self.world_size),
                                    round(random.random() * self.world_size)])
         self.num_landmarks = num_landmarks
-
-
+    
+    
     # called when print(robot) is called; prints the robot's location
     def __repr__(self):
         return 'Robot: [x=%.5f y=%.5f]'  % (self.x, self.y)
-
 
 
 ####### END robot class #######
